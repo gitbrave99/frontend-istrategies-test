@@ -1,0 +1,36 @@
+
+<p-dialog [(visible)]="isUpdateOrderDialogShow" [style]="{ width: '650px', height:'430px' }"
+    header="Actualizar orden de producción" [modal]="true" (onHide)="closeDialog()" styleClass="p-fluid">
+    <ng-template pTemplate="content">
+        <div class="formgrid grid">
+            <div class="field col-6">
+                <label for="inventoryStatus">Estado</label>
+                <p-dropdown inputId="inventoryStatus" [(ngModel)]="selectedStatusUpdateOrder" [options]="estadoOrden"
+                    optionLabel="value" optionValue="id" placeholder="Selecciona estado" [appendTo]="'body'">
+                </p-dropdown>
+            </div>
+            <div class="field col-8" *ngIf="selectedStatusUpdateOrder===2">
+                <label for="description">Fecha de ingreso a línea de producción</label>
+                <p-calendar [iconDisplay]="'input'" autofocus="false" name="fechaEnProduccion"
+                    [(ngModel)]="fechaEnProduccion" [showIcon]="true" inputId="icondisplay"
+                    [appendTo]="'body'" />
+            </div>
+            <div class="field col-6" *ngIf="selectedStatusUpdateOrder===2">
+                <label for="otraadd">Línea de producción asignada</label>
+                <p-dropdown inputId="otraadd" [options]="lineaProduccion" name="idTipoLinea"
+                    [(ngModel)]="orderInProgress.idTipoLinea" optionLabel="value" optionValue="id"
+                    placeholder="Seleccione linea" [appendTo]="'body'">
+                </p-dropdown>
+            </div>
+            <div class="field col-8" *ngIf="selectedStatusUpdateOrder===3">
+                <label for="description">Fecha finalización</label>
+                <p-calendar [iconDisplay]="'input'" autofocus="false" name="fechaEnProduccion"
+                    [(ngModel)]="fechaFinalizacion" [showIcon]="true" inputId="icondisplay" [appendTo]="'body'" />
+            </div>
+        </div>
+    </ng-template>
+    <ng-template pTemplate="footer">
+        <p-button pRipple label="Cancel" icon="pi pi-times" [text]="true" (click)="closeDialog()" />
+        <p-button pRipple label="Save" icon="pi pi-check" [text]="true" (click)="confirmDialog()" />
+    </ng-template>
+</p-dialog>

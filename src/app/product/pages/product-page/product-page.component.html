@@ -1,0 +1,21 @@
+<app-product-table
+(onOpenNewProducDialog)="showNewProductDialog()"
+(onOpenUpdateProductDialog)="showUpdateProductDialog($event)"
+(onDeleteProduct)="deleteSelectedProduct($event)"
+(onFilterByTipoChange)="onFilterByTipoChange($event)"
+[products]="productsList"
+[loading]="isLoadingTable"/>
+
+<app-product-form-add 
+[isOpenDialod]="isNewProductoDialogShow" 
+(onCloseDialog)="hideNewProductDialog()"
+/>
+
+<app-product-form-update 
+[isOpenDialog]="isUpdateProductDialogShow" 
+(onCloseDialog)="hideUpdateProductDialog()"
+(onAcceptDialog)="updateProductDialog()"
+[selectedProductUpdate]="selectedProductUpdate"/>
+
+<p-confirmDialog [style]="{ width: '450px' }" />
+<p-toast />

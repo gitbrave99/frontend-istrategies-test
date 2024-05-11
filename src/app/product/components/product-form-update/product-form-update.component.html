@@ -1,0 +1,31 @@
+
+<p-dialog [(visible)]="isOpenDialog" [style]="{ width: '650px' }" header="Modificar producto"
+    [modal]="true" styleClass="p-fluid" (onHide)="onHideDialog()">
+    <ng-template pTemplate="content">
+        <div class="formgrid grid">
+            <div class="field col-12">
+                <label for="descripcionmd">Descripción</label>
+                <textarea autofocus rows="3" id="descripcionmd" cols="30" pInputTextarea name="descripcion"
+                    [(ngModel)]="selectedProductUpdate.descripcion">
+            </textarea>
+            </div>
+            <div class="field col-6">
+                <label for="existencianv">Existencia</label>
+                <p-inputNumber [showButtons]="true" name="existencia" [(ngModel)]="selectedProductUpdate.existencia"
+                    buttonLayout="horizontal" inputId="horizontal" spinnerMode="horizontal" [step]="1"
+                    decrementButtonClass="p-button-danger" incrementButtonClass="p-button-success"
+                    incrementButtonIcon="pi pi-plus" decrementButtonIcon="pi pi-minus" min="0" />
+            </div>
+            <div class="field col-6">
+                <label for="stadomd">Estado</label>
+                <p-dropdown inputId="stadomd" [options]="status" optionLabel="status" placeholder="Selecciona estado"
+                    [appendTo]="'body'" optionValue="id" name="estado" [(ngModel)]="selectedProductUpdate.idestado">
+                </p-dropdown>
+            </div>
+        </div>
+    </ng-template>
+    <ng-template pTemplate="footer">
+        <p-button pRipple label="Cancelar" icon="pi pi-times" [text]="true" (click)="onHideDialog()" />
+        <p-button pRipple label="Guardar" icon="pi pi-check" [text]="true" (click)="updateProductDialog()" />
+    </ng-template>
+</p-dialog>

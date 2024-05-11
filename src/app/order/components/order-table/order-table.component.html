@@ -1,0 +1,218 @@
+<div class="card">
+    <p-table #dt [value]="ordersList" [resizableColumns]="true" columnResizeMode="expand" dataKey="id" [rowHover]="true"
+        [rows]="10" [showCurrentPageReport]="true" [rowsPerPageOptions]="[10, 25, 50]" [loading]="loading"
+        [paginator]="true" currentPageReportTemplate="Página {first} de {last}. Total {totalRecords}" [filterDelay]="0"
+        [globalFilterFields]="['cliente', 'fechaEntrega', 'estado']" styleClass="p-datatable-sm">
+        <ng-template pTemplate="caption">
+            <div class="flex justify-content-between">
+                <div>
+                    <p-button pRipple severity="success" label="Nueva orden" icon="pi pi-plus" class="mr-2"
+                        (click)="onOpenFormAdd()" />
+                        <p-button pRipple severity="secondary" [loading]="exportReportHistoricLoading" label="Reporte Historico" icon="pi pi-file-pdf" class="mr-2"
+                        (click)="onGenerateReportHistoric()"></p-button>
+                        <p-button pRipple severity="secondary" [loading]="exportReportLoading" label="Reporte" icon="pi pi-file-pdf" class="mr-2"
+                        (click)="onGenerateReport()"></p-button>
+                    <p-dropdown [(ngModel)]="selectedStatus" [options]="statusList" optionLabel="value" optionValue="id"
+                        placeholder="Filtrar por Estado" (onChange)="filterListByType($event)"></p-dropdown>
+                    <p-calendar [iconDisplay]="'input'" autofocus="false" name="fechaEnProduccion" [showIcon]="true"
+                        inputId="icondisplay" [(ngModel)]="filterDate" [appendTo]="'body'" [showIcon]="true" 
+                        (onSelect)="filterByDate($event)"/>
+                        <p-button pRipple severity="info" label="Borrar filtro" icon="pi pi-trash" class="mr-2"
+                        (click)="clearFilters()"></p-button>
+                </div>
+                <p-iconField iconPosition="left">
+                    <p-inputIcon>
+                        <i class="pi pi-search"></i>
+                    </p-inputIcon>
+                    <input pInputText type="text" [(ngModel)]="searchOrder" (input)="filtrar()"
+                        placeholder="Keyboard Search" />
+                </p-iconField>
+            </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+            <tr>
+                <th pSortableColumn="idOrdenProduccion">
+                    <div class="flex justify-content-start align-items-center">
+                        No. Orden
+                        <p-sortIcon field="idOrdenProduccion" />
+                        <!-- <p-columnFilter type="text" field="name" display="menu" class="ml-auto" /> -->
+                    </div>
+                </th>
+                <th pSortableColumn="cliente">
+                    <div class="flex justify-content-center align-items-start">
+                        Cliente
+                        <div><p-sortIcon field="cliente" /></div>
+                        <!-- <div><p-columnFilter type="text" field="country.name" display="menu" class="ml-auto" /></div> -->
+                    </div>
+                </th>
+                <th pSortableColumn="fechaEntrega">
+                    <div class="flex justify-content-between align-items-center">
+                        Fecha de recepción
+                        <p-sortIcon field="fechaEntrega" />
+                        <!-- <p-columnFilter type="date" field="date" display="menu" class="ml-auto" /> -->
+                    </div>
+                </th>
+                <th pSortableColumn="tipoProductoSolicitado">
+                    <div class="flex justify-content-between align-items-center">
+                        Tipo de producto
+                        <p-sortIcon field="tipoProductoSolicitado" />
+                        <!-- <p-columnFilter type="numeric" field="balance" display="menu" currency="USD" class="ml-auto" /> -->
+                    </div>
+                </th>
+                <th pSortableColumn="cantidadSolicitada" style="min-width: 12rem">
+                    <div class="flex justify-content-between align-items-center">
+                        Cantidad solicitada
+                        <p-sortIcon field="cantidadSolicitada" />
+                    </div>
+                </th>
+                <th pSortableColumn="estado">
+                    <div class="flex justify-content-between align-items-center">
+                        Estado
+                        <p-sortIcon field="estado" />
+                    </div>
+                </th>
+                <th pSortableColumn="fechaEnProduccion">
+                    <div class="flex justify-content-between align-items-center">
+                        Fecha en Producción
+                        <p-sortIcon field="fechaEnProduccion" />
+                    </div>
+                </th>
+                <th pSortableColumn="tipoLineaProduccion">
+                    <div class="flex justify-content-between align-items-center">
+                        Tipo de linea
+                        <p-sortIcon field="tipoLineaProduccion" />
+                    </div>
+                </th>
+                <th pSortableColumn="fechaFinalizacion">
+                    <div class="flex justify-content-between align-items-center">
+                        Fecha finalización
+                        <p-sortIcon field="fechaFinalizacion" />
+                        <!-- <p-columnFilter type="date" field="date" display="menu" class="ml-auto" /> -->
+                    </div>
+                </th>
+                <th pSortableColumn="activity" style="min-width: 12rem">
+                    <div class="flex justify-content-center align-items-center">
+                        Acciones
+                    </div>
+                </th>
+                <th style="width: 5rem"></th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-order>
+            <tr class="p-selectable-row">
+                <!-- <td>
+                    <p-tableCheckbox [value]="customer" />
+                </td> -->
+                <td>
+                    <span class="p-column-title">idOrdenProduccion</span>
+                    {{ order.idOrdenProduccion}}
+                </td>
+                <td>
+                    <span class="p-column-title">cliente</span>
+                    {{ order.cliente}}
+                </td>
+                <td>
+                    <span class="p-column-title">fechaEntrega</span>
+                    {{ order.fechaEntrega | date : 'MM/dd/yyyy' }}
+                </td>
+                <td>
+                    <span class="p-column-title">tipoProductoSolicitado</span>
+                    {{order.tipoProductoSolicitado}}
+                </td>
+                <td>
+                    <span class="p-column-title">cantidadSolicitada</span>
+                    {{order.cantidadSolicitada}}
+                </td>
+                <td>
+                    <span class="p-column-title">Status</span>
+                    <p-tag [value]="order.estado" [severity]="getSeverity(order.estado)" />
+                </td>
+                <td>
+                    <span class="p-column-title">fechaEnProduccion</span>
+                    {{ order.fechaEnProduccion | date : 'MM/dd/yyyy' }}
+                </td>
+                <td>
+                    <span class="p-column-title">tipoLineaProduccion</span>
+                    {{ order.tipoLineaProduccion}}
+                </td>
+                <td>
+                    <span class="p-column-title">fechaEnProduccion</span>
+                    {{ order.fechaFinalizacion | date : 'MM/dd/yyyy' }}
+                </td>
+                <td style="text-align: center">
+                    <button pButton pRipple icon="pi pi-pencil" class="mr-2" class="p-button-warning"
+                        (click)="onOpenFormUpdate(order)"></button>
+                    <!-- <button pButton pRipple icon="pi pi-trash" class="p-button-danger"
+                        (click)="deleteProduct(order)"></button> -->
+                    <!-- <button pButton pRipple icon="pi pi-list" class="p-button-secondary"
+                        pTooltip="Ver detalle materia prima" tooltipPosition="left"
+                        placeholder="Ver detalle materia prima" (click)="verDetallePrima(product)"></button> -->
+                    <button pButton pRipple icon="pi pi-list" class="p-button-secondary"
+                        pTooltip="Ver detalle materia prima" tooltipPosition="left"
+                        placeholder="Ver detalle materia prima" (click)="showViewDetPrimaDialog(order)"></button>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+            <tr>
+                <td colspan="8">No customers found.</td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>
+
+
+<p-dialog [(visible)]="isViewDetPrimaDialogShow" [style]="{ width: '700px' }" header="Detalle de prima" [modal]="true"
+    styleClass="p-fluid">
+    <ng-template pTemplate="content">
+        <div class="grid mt-1 border-2 border-black-alpha-20">
+            <div class="col-12 border-2 border-black-alpha-20">
+                <b>Estado: </b>
+                <span>Pendiente</span>
+            </div>
+            <div class="col-6 border-2 border-black-alpha-20">
+                <b>No. Orden: </b>
+                <span>#12i12</span>
+            </div>
+            <div class="col-6 border-2 border-black-alpha-20">
+                <b>Fecha de entrega: </b>
+                <span> 09/13/2015</span>
+            </div>
+            <div class="col-12 border-2 border-black-alpha-10">
+                <b>Cliente: </b>
+                <span>Johon wick ternceo</span>
+            </div>
+            <div class="col-6">
+                <b>Tipo de producto: </b>
+                <span>Camisa</span>
+            </div>
+            <div class="col-6">
+                <b>Cantidad: </b>
+                <span>12</span>
+            </div>
+        </div>
+        <p-table [tableStyle]="{ 'min-width': '35rem' }" styleClass="p-datatable-gridlines">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th style="min-width: 3rem">Codigo</th>
+                    <th style="min-width: 8rem">Materia Prima</th>
+                    <th style="min-width: 4rem">Cantidad</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body">
+                <tr>
+                    <td> product.code </td>
+                    <td> product.name </td>
+                    <td> product.category </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </ng-template>
+    <ng-template pTemplate="footer">
+        <p-button pRipple label="Aceptar" icon="pi pi-check" [text]="true" (click)="hideViewDetPrimaDialog()" />
+        <!-- <p-button pRipple label="Save" icon="pi pi-check" [text]="true" /> -->
+    </ng-template>
+</p-dialog>
+
+<p-confirmDialog [style]="{ width: '450px' }" />
+<p-toast />

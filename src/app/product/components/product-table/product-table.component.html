@@ -1,0 +1,142 @@
+<div class="card">
+    <p-table #dt [value]="productslc" [resizableColumns]="true" columnResizeMode="expand" dataKey="id" [rowHover]="true"
+        [rows]="10" [showCurrentPageReport]="true" [rowsPerPageOptions]="[10, 25, 50]" [loading]="loading"
+        [paginator]="true" currentPageReportTemplate="Página {first} de {last}. Total {totalRecords}" [filterDelay]="0"
+        [globalFilterFields]="['nombre', 'existencia', 'estado']" styleClass="p-datatable-sm">
+        <ng-template pTemplate="caption">
+            <div class="grid">
+                <div class="sm:col-12 md:col-6">
+                    <div class="d-flex justify-content-center align-items-center h-full">
+                        <div class="text-center">
+                            <p-button pRipple severity="success" label="Nuevo" icon="pi pi-plus" class="mr-2" (click)="showNewProductDialog()"></p-button>
+                            <p-button pRipple severity="secondary" [loading]="exportReportLoading" label="Reporte" icon="pi pi-file-pdf" class="mr-2"
+                            (click)="onGenerateReport()"></p-button>
+                            <p-dropdown [(ngModel)]="filterByTipo" [options]="productTypeFilter" optionLabel="type" optionValue="id"
+                            placeholder="Filtrar por tipo"  (onChange)="filterListByType($event)"></p-dropdown>
+                        </div>
+                    </div>
+                </div>
+                <div class="sm:col-12 md:col-4 md:col-offset-1">
+                    <div class="d-flex justify-content-center align-items-center h-full">
+                        <div class="text-center w-full">
+                            <p-iconField>
+                                <p-inputIcon>
+                                    <i class="pi pi-search"></i>
+                                </p-inputIcon>
+                                <input pInputText type="text" [(ngModel)]="searchProduct" (input)="filtrar()" placeholder="Keyboard Search" class="w-full" />
+                            </p-iconField>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+            <tr>
+                <!-- <th style="width: 4rem">
+                    <p-tableHeaderCheckbox />
+                </th> -->
+                <th pSortableColumn="idProducto">
+                    <div class="flex justify-content-center align-items-center">
+                        Código
+                        <p-sortIcon field="idProducto" />
+                        <!-- <p-columnFilter type="text" field="idProducto" display="menu" class="ml-auto" /> -->
+                      </div>
+                </th>
+                <th pSortableColumn="nombre">
+                    <div class="flex justify-content-center align-items-center">
+                        Producto
+                        <div><p-sortIcon field="nombre" /></div>
+                        <!-- <div><p-columnFilter type="text" field="country.name" display="menu" class="ml-auto" /></div> -->
+                    </div>
+                </th>
+
+                <th pSortableColumn="descripcion">
+                    <div class="flex justify-content-center align-items-center">
+                        Descripción
+                        <p-sortIcon field="descripcion" />
+                        <!-- <p-columnFilter type="date" field="date" display="menu" class="ml-auto" /> -->
+                    </div>
+                </th>
+                <th pSortableColumn="tipo">
+                    <div class="flex justify-content-center align-items-center">
+                        Tipo de producto
+                        <p-sortIcon field="tipo" />
+                    </div>
+                </th>
+                <th pSortableColumn="unidad">
+                    <div class="flex justify-content-center align-items-center">
+                        Unidad
+                        <p-sortIcon field="unidad" />
+                        <!-- <p-columnFilter type="numeric" field="balance" display="menu" currency="USD" class="ml-auto" /> -->
+                    </div>
+                </th>
+                <th pSortableColumn="existencia">
+                    <div class="flex justify-content-center align-items-center">
+                        Existencia
+                        <p-sortIcon field="existencia" />
+                        <!-- <p-columnFilter type="numeric" field="balance" display="menu" currency="USD" class="ml-auto" /> -->
+                    </div>
+                </th>
+                <th pSortableColumn="estado">
+                    <div class="flex justify-content-center align-items-center">
+                        Estado
+                        <p-sortIcon field="estado" />
+                    </div>
+                </th>
+                <th style="min-width: 12rem">
+                    <div class="flex justify-content-center align-items-center">
+                        Acciones
+                    </div>
+                </th>
+                <th style="width: 3rem"></th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-product>
+            <tr class="p-selectable-row">
+                <!-- <td>
+                    <p-tableCheckbox [value]="customer" />
+                </td> -->
+                <td class="text-center">
+                    <span class="p-column-title">idProducto</span>
+                    {{ product.idProducto }}
+                </td>
+                <td class="text-center">
+                    <span class="p-column-title">Nombre</span>
+                    {{ product.nombre }}
+                </td>
+                <td class="text-center">
+                    <span class="p-column-title">Descripcion</span>
+                    {{ product.descripcion}}
+                </td>
+                <td class="text-center">
+                    <span class="p-column-title">Tipo</span>
+                    {{ product.tipo}}
+                </td>
+                <td class="text-center">
+                    <span class="p-column-title">Unidad</span>
+                    {{ product.unidad}}
+                </td>
+                <td class="text-center">
+                    <span class="p-column-title">Existencia</span>
+                    {{ product.existencia}}
+                </td>
+                <td class="text-center">
+                    <span class="p-column-title">Estado</span>
+                    <p-tag [value]="product.estado" [severity]="getSeverityStatus(product.estado)" />
+                </td>
+                <td style="text-align: center">
+                    <button pButton pRipple icon="pi pi-pencil" class="mr-2 p-button-warning"
+                        (click)="showOpenUpdateProductDialog(product)"></button>
+                    <button pButton pRipple icon="pi pi-trash" class="p-button-danger"
+                        (click)="deleteSelectedProduct(product)"></button>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+            <tr>
+                <td colspan="8">No hay productos</td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>
+

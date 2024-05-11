@@ -1,0 +1,46 @@
+
+<p-dialog [(visible)]="isNewOrderDialogShow" [style]="{ width: '650px' }" header="Nueva orden de producción"
+    [modal]="true" (onHide)="closeDialog()" styleClass="p-fluid">
+    <ng-template pTemplate="content">
+        <div class="formgrid grid">
+            <!-- LO HACE EL SP EL INGRESO DEL ESTADO -->
+            <!-- <div class="field col-6">
+                <label for="inventoryStatus">Estado</label>
+                <p-dropdown   inputId="inventoryStatus" [options]="estadoOrden" [(ngModel)]="order.estado"
+                    optionLabel="value" optionValue="id" placeholder="Selecciona estado" [appendTo]="'body'">
+                </p-dropdown>
+            </div> -->
+            <div class="field col-8">
+                <label for="name">Cliente</label>
+                <input type="text" pInputText id="name" [(ngModel)]="orderNew.cliente" required />
+                <!-- <small class="p-error">
+                    Name is required.
+                </small> -->
+            </div>
+            <div class="field col-4">
+                <label for="fechaRecepcion">Fecha de recepción</label>
+                <p-calendar [iconDisplay]="'input'" [(ngModel)]="fechaEntrega" [showIcon]="true"
+                    inputId="icondisplay" dateFormat="yy-mm-dd" [appendTo]="'body'">
+                </p-calendar>
+            </div>
+            <div class="field col-6">
+                <label for="tipoProducto">Tipo producto</label>
+                <p-dropdown inputId="tipoProducto" [options]="tipoProductoSolicitado"
+                    [(ngModel)]="orderNew.idTipoProductoSolicitado" optionLabel="value" optionValue="id"
+                    placeholder="Selecciona el tipo" [appendTo]="'body'">
+                </p-dropdown>
+            </div>
+            <div class="field col-6">
+                <label for="existencianv">Cantidad de producto</label>
+                <p-inputNumber [showButtons]="true" name="existencia" [(ngModel)]="orderNew.cantidadSolicitada"
+                    buttonLayout="horizontal" inputId="horizontal" spinnerMode="horizontal" [step]="1"
+                    decrementButtonClass="p-button-danger" incrementButtonClass="p-button-success"
+                    incrementButtonIcon="pi pi-plus" decrementButtonIcon="pi pi-minus" min="0" />
+            </div>
+        </div>
+    </ng-template>
+    <ng-template pTemplate="footer">
+        <p-button pRipple label="Cancel" icon="pi pi-times" [text]="true" (click)="closeDialog()" />
+        <p-button pRipple label="Save" icon="pi pi-check" [text]="true" (click)="confirmDialog()" />
+    </ng-template>
+</p-dialog>

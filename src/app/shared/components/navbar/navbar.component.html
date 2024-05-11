@@ -1,0 +1,19 @@
+
+<div class="card">
+    <p-menubar [model]="itemsNavbar">
+        <ng-template pTemplate="start">
+            <ng-template pTemplate="item" let-item let-root="root">
+                <a pRipple class="flex align-items-center p-menuitem-link">
+                    <span [class]="item.icon"></span>
+                    <span class="ml-2">{{ item.label }}</span>
+                </a>
+            </ng-template>
+        </ng-template>
+        <ng-template pTemplate="end">
+            <div class="flex align-items-center gap-2">
+                    <p-avatar styleClass="cursor-pointer" (click)="menu.toggle($event)" image="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png" shape="circle"></p-avatar>
+                  <p-menu #menu [model]="itemsUserConfig" [popup]="true"></p-menu>
+            </div>
+        </ng-template>
+    </p-menubar>
+</div>

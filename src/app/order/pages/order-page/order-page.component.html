@@ -1,0 +1,24 @@
+<order-order-table
+[loading]="loadingTable"
+[orders]="orders"
+(onFilterByTipoChange)="onFilterByStatusChange($event)"
+(onFilterByDate)="onFilterByDeliveryDate($event)"
+(onOpenNewOrderDialog)="showNewOrderDialog()"
+(onOpenUpdateOrderDialog)="showUpdateOrderDialog($event)"
+(onReloadTable)="getOrders()"
+/>
+
+<app-order-form-add
+ [isNewOrderDialogShow]="isNewOrderDialogShow"
+ (onHideNewOrderDialog)="hideNewOrderDialog()"
+ (onConfirmDialog)="save($event)"
+ />
+
+ <app-order-form-update
+ [isUpdateOrderDialogShow]="isUpdateOrderDialogShow"
+ (onCloseDialog)="hideUpdateOrderDialog()"
+ [selectedOrder]="selectedOrderUpdate"
+ (onUpdateInProgress)="updateOrderInProgress($event.idOrdenProduccion, $event.orderInProgres)"
+ (onUpdateComplete)="updateOrderComplete($event.idOrdenProduccion, $event.dateComplete)"
+
+ />

@@ -1,0 +1,46 @@
+
+<p-dialog [(visible)]="isOpenDialod" [style]="{ width: '650px' }" header="Agregar producto" [modal]="true"
+    styleClass="p-fluid" (onHide)="onHideDialog()">
+    <ng-template pTemplate="content">
+        <div class="formgrid grid">
+            <div class="field col-12">
+                <label for="nombrenv">Nombre</label>
+                <input type="text" pInputText id="nombrenv" name="nombre" [(ngModel)]="selectedProduct.nombre" />
+            </div>
+            <div class="field col-12">
+                <label for="descripcionnv">Descripcion</label>
+                <textarea rows="3" cols="30" pInputTextarea name="descripcion"
+                    [(ngModel)]="selectedProduct.descripcion"></textarea>
+            </div>
+            <div class="field col-6">
+                <label for="producttypenv">Tipo producto</label>
+                <p-dropdown inputId="producttypenv" [options]="productType" optionLabel="type" name="tipo"
+                    [(ngModel)]="selectedProduct.tipo" optionValue="id" placeholder="Selecciona el tipo"
+                    [appendTo]="'body'">
+                </p-dropdown>
+            </div>
+            <div class="field col-6">
+                <label for="">Unidad</label>
+                <input type="text" pInputText placeholder="Cajas Fardos, Unidades, Rollos, Cubetas"
+                    [(ngModel)]="selectedProduct.unidad" />
+            </div>
+            <div class="field col-6">
+                <label for="existencianv">Existencia</label>
+                <p-inputNumber [showButtons]="true" name="existencia" [(ngModel)]="selectedProduct.existencia"
+                    buttonLayout="horizontal" inputId="horizontal" spinnerMode="horizontal" [step]="1"
+                    decrementButtonClass="p-button-danger" incrementButtonClass="p-button-success"
+                    incrementButtonIcon="pi pi-plus" decrementButtonIcon="pi pi-minus" min="0" />
+            </div>
+            <div class="field col-6">
+                <label for="estadonv">Estado</label>
+                <p-dropdown inputId="estadonv" name="estado" [(ngModel)]="selectedProduct.estado" [options]="status"
+                    optionLabel="status" placeholder="Selecciona estado" optionValue="id" [appendTo]="'body'">
+                </p-dropdown>
+            </div>
+        </div>
+    </ng-template>
+    <ng-template pTemplate="footer">
+        <p-button pRipple label="Cancelar" icon="pi pi-times" [text]="true" (click)="onHideDialog()" />
+        <p-button pRipple label="Guardar" icon="pi pi-check" [text]="true" (click)="saveProductDialog()" />
+    </ng-template>
+</p-dialog>
