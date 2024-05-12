@@ -1,5 +1,4 @@
-
-<p-dialog [(visible)]="isNewOrderDialogShow" [style]="{ width: '650px' }" header="Nueva orden de producción"
+<p-dialog [(visible)]="isNewOrderDialogShow" [style]="{ width: '1300px' }" header="Nueva orden de producción"
     [modal]="true" (onHide)="closeDialog()" styleClass="p-fluid">
     <ng-template pTemplate="content">
         <div class="formgrid grid">
@@ -19,8 +18,8 @@
             </div>
             <div class="field col-4">
                 <label for="fechaRecepcion">Fecha de recepción</label>
-                <p-calendar [iconDisplay]="'input'" [(ngModel)]="fechaEntrega" [showIcon]="true"
-                    inputId="icondisplay" dateFormat="yy-mm-dd" [appendTo]="'body'">
+                <p-calendar [iconDisplay]="'input'" [(ngModel)]="fechaEntrega" [showIcon]="true" inputId="icondisplay"
+                    dateFormat="yy-mm-dd" [appendTo]="'body'">
                 </p-calendar>
             </div>
             <div class="field col-6">
@@ -37,10 +36,91 @@
                     decrementButtonClass="p-button-danger" incrementButtonClass="p-button-success"
                     incrementButtonIcon="pi pi-plus" decrementButtonIcon="pi pi-minus" min="0" />
             </div>
+            <div class="field col-6">
+                <p-table #dt [value]="materiaPrimaList" [rows]="4" [paginator]="true" [rowHover]="true"
+                    currentPageReportTemplate="Página {first} de {last}. Total {totalRecords}"
+                    [showCurrentPageReport]="true" [tableStyle]="{ 'min-width': '35rem' }"
+                    styleClass="p-datatable-gridlines">
+                    <ng-template pTemplate="caption">
+                        <h2 class="m-0 tex-center">Materia Prima</h2>
+                        <p>Producto: <i>{{matNameSelected}}</i> </p>
+                        <label for="name">Cantidad por utilizar</label>
+                        <p-inputNumber [showButtons]="true" name="cantToUse" [(ngModel)]="cantToUse"
+                            buttonLayout="horizontal" inputId="horizontal" spinnerMode="horizontal" [step]="1"
+                            decrementButtonClass="p-button-danger" incrementButtonClass="p-button-success"
+                            incrementButtonIcon="pi pi-plus" decrementButtonIcon="pi pi-minus" min="0" />
+                        <button pButton pRipple (click)="addMatPrima()" label="Add" class="mr-2 p-button-info"></button>
+                    </ng-template>
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th pSortableColumn="idProducto" style="min-width: 3rem">Codigo <p-sortIcon
+                                    field="idProducto" /></th>
+                            <th pSortableColumn="nombre" style="min-width: 8rem">Materia Prima <p-sortIcon
+                                    field="nombre" /></th>
+                            <th pSortableColumn="descripcion" style="min-width: 4rem">Existencia <p-sortIcon
+                                    field="descripcion" /></th>
+                            <th></th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-materia>
+                        <tr>
+                            <td> {{ materia.idProducto }} </td>
+                            <td> {{ materia.nombre }} </td>
+                            <td> {{ materia.existencia }} {{ materia.unidad | uppercase }} </td>
+                            <td style="text-align: center">
+                                <button pButton pRipple (click)="selectMateriaPrima(materia)" icon="pi pi-plus"
+                                    class="mr-2 p-button-info"></button>
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </div>
+            <div class="field col-6">
+                <p-table #dt [value]="matPrimaListSelected" [rows]="4" [paginator]="true" [rowHover]="true"
+                    currentPageReportTemplate="Página {first} de {last}. Total {totalRecords}"
+                    [showCurrentPageReport]="true" [tableStyle]="{ 'min-width': '35rem' }"
+                    styleClass="p-datatable-gridlines">
+                    <ng-template pTemplate="caption">
+                        <h2 class="m-0 tex-center">Materia Prima Seleccionada</h2>
+                        <p>Producto: <i>{{matNameModSelected}}</i> </p>
+                        <label for="name">Cantidad por utilizar</label>
+                        <p-inputNumber [showButtons]="true" name="cantToMod" [(ngModel)]="cantToUseMod"
+                            buttonLayout="horizontal" inputId="horizontal" spinnerMode="horizontal" [step]="1"
+                            decrementButtonClass="p-button-danger" incrementButtonClass="p-button-success"
+                            incrementButtonIcon="pi pi-plus" decrementButtonIcon="pi pi-minus" min="0" />
+                        <button pButton pRipple label="Editar" (click)="modMatPrima()"
+                            class="mr-2 p-button-warning"></button>
+                    </ng-template>
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th pSortableColumn="idProducto" style="min-width: 3rem">Codigo <p-sortIcon
+                                    field="idProducto" /></th>
+                            <th pSortableColumn="nombre" style="min-width: 8rem">Materia Prima <p-sortIcon
+                                    field="nombre" /></th>
+                            <th pSortableColumn="descripcion" style="min-width: 4rem">Cantidad por utilizar <p-sortIcon
+                                    field="descripcion" /></th>
+                            <th></th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-materia>
+                        <tr>
+                            <td> {{ materia.idProducto }} </td>
+                            <td> {{ materia.nombre }} </td>
+                            <td> {{ materia.existencia }} {{ materia.unidad | uppercase }} </td>
+                            <td style="text-align: center">
+                                <button pButton (click)="selectModMateriaPrima(materia)" pRipple icon="pi pi-pencil"
+                                    class="mr-2 p-button-warning"></button>
+                                <button pButton (click)="deleteMateriaPrima(materia)" pRipple icon="pi pi-trash"
+                                    class="mr-2 p-button-danger"></button>
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </div>
         </div>
     </ng-template>
     <ng-template pTemplate="footer">
-        <p-button pRipple label="Cancel" icon="pi pi-times" [text]="true" (click)="closeDialog()" />
-        <p-button pRipple label="Save" icon="pi pi-check" [text]="true" (click)="confirmDialog()" />
+        <p-button pRipple label="Cancelar" icon="pi pi-times" [text]="true" (click)="closeDialog()" />
+        <p-button pRipple label="Agregar" icon="pi pi-check" [text]="true" (click)="confirmDialog()" />
     </ng-template>
 </p-dialog>

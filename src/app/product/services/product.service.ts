@@ -15,6 +15,17 @@ export class ProductService {
     return this.http.get<Product[]>(`${environment.urlBase}/productos`)
   }
 
+  getProductByIdCantToUse(idProducto:number, cantToUse:number): Observable<ApiResponse> {
+    return this.http.get<ApiResponse>(`${environment.urlBase}/productos/find?idproducto=${idProducto}&cantusar=${cantToUse}`)
+    .pipe(
+      catchError((error: any) => {
+        const apiResponse: ApiResponse = error.error;
+        console.log('Error en la solicitud:', apiResponse);
+        return throwError(()=>error.error);
+      })
+    );
+  }
+
   getProductByType(type:number): Observable<Product[]> {
     return this.http.get<Product[]>(`${environment.urlBase}/productos/list-type/${type}`)
   }

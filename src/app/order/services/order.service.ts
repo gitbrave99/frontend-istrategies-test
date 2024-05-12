@@ -18,7 +18,7 @@ export class OrderService {
   getOrders(): Observable<Order[]> {
     return this.http.get<Order[]>(`${environment.urlBase}/orden-produccion`)
   }
-
+  
   getOrdersByDate(date:string): Observable<Order[]> {
     return this.http.get<Order[]>(`${environment.urlBase}/orden-produccion/date?date=${date}`)
   }
