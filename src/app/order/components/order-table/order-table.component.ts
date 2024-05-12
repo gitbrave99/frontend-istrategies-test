@@ -165,8 +165,6 @@ export class OrderTableComponent {
     })
   }
 
-
-
   onGenerateReportHistoric() {
     this.getReportAll()
   }
@@ -196,6 +194,7 @@ export class OrderTableComponent {
 
   showViewDetPrimaDialog(order: Order) {
     this.isViewDetPrimaDialogShow = true;
+    this.orderSelected= order
   }
   hideViewDetPrimaDialog() {
     this.isViewDetPrimaDialogShow = false;
