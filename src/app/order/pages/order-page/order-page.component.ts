@@ -18,36 +18,46 @@ export class OrderPageComponent implements OnInit {
   isNewOrderDialogShow: boolean = false;
   selectedOrderUpdate: Order = {} as Order
   isUpdateOrderDialogShow: boolean = false;
-  selectedStatusFilter:number=0
-  dateFilter:string="";
-  
+  selectedStatusFilter: number = 0
+  dateFilter: Date | null = null;
 
   constructor(private orderService: OrderService, private messageService: MessageService, private confirmationService: ConfirmationService) { }
 
   ngOnInit(): void {
     this.getOrders()
   }
+
+  clearFilters() {
+    this.dateFilter = null
+    this.selectedStatusFilter = -1
+  }
+
+  setFilters(date: Date, status: number) {
+    this.dateFilter = date;
+    this.selectedStatusFilter = status
+  }
+
   onFilterByDeliveryDate(date: Date) {
     const datef = dayjs(date).format('YYYY-MM-DD');
-    this.dateFilter=datef
-    console.log("opcion: ", this.selectedStatusFilter, "dat: ", this.dateFilter);
-    if (this.selectedStatusFilter==0) {
+    this.dateFilter= date
+    console.log("IN DATE DROPDOWN opcion: ", this.selectedStatusFilter, "dat: ", datef);
+    if (this.selectedStatusFilter == 0) {
       this.getOrdersByDate(datef)
       return
     }
-    this.getFilteredOrders(this.selectedStatusFilter,datef)
+    this.getFilteredOrders(this.selectedStatusFilter, datef)
   }
 
-  onFilterByStatusChange(event: { originalEvent: Event; value: number }) {    
-    this.selectedStatusFilter=event.value
-    console.log("opcion: ", this.selectedStatusFilter, "dat: ", this.dateFilter);
-    if (this.dateFilter=="") return;
+  onFilterByStatusChange(event: { originalEvent: Event; value: number }) {
+    this.selectedStatusFilter = event.value
+    console.log("IN DROPDOWN STATUS opcion: ", this.selectedStatusFilter, "dat: ", this.dateFilter);
+    if (this.dateFilter == null) return;
+    const datef = dayjs(this.dateFilter).format('YYYY-MM-DD');
     if (event.value === 0) {
-      // this.getOrders();
-      this.getOrdersByDate(this.dateFilter)
+      this.getOrdersByDate(datef)
       return;
     }
-    this.getFilteredOrders(event.value,this.dateFilter);
+    this.getFilteredOrders(event.value, datef);
   }
 
   getFilteredOrders(status: number, date: string) {
@@ -64,6 +74,16 @@ export class OrderPageComponent implements OnInit {
         this.orders = list
       }
     })
+  }
+
+  getOrders() {
+    this.orderService.getOrders()
+      .subscribe({
+        next: (rOrders) => {
+          this.orders = rOrders;
+        }
+      })
+    this.loadingTable = false;
   }
 
   save(newOrder: OrderNew) {
@@ -90,15 +110,7 @@ export class OrderPageComponent implements OnInit {
     this.hideNewOrderDialog()
   }
 
-  getOrders() {
-    this.orderService.getOrders()
-      .subscribe({
-        next: (rOrders) => {
-          this.orders = rOrders;
-        }
-      })
-    this.loadingTable = false;
-  }
+
 
   showUpdateOrderDialog(order: Order) {
     this.selectedOrderUpdate = order
@@ -124,6 +136,7 @@ export class OrderPageComponent implements OnInit {
       },
       complete: () => {
         this.getOrders();
+        this.selectedOrderUpdate = {} as Order
       }
     })
   }
@@ -163,12 +176,5 @@ export class OrderPageComponent implements OnInit {
     this.isNewOrderDialogShow = false;
   }
 
-  getDateFormatted(date: Date):string {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // El mes se indexa desde 0, así que se suma 1
-    const day = String(date.getDate()).padStart(2, '0'); 
-    // Formatear la fecha en el formato YYYY-MM-DD
-    return `${year}-${month}-${day}`;
-  }
 }
 

@@ -1,6 +1,6 @@
 
 <p-dialog [(visible)]="isOpenDialod" [style]="{ width: '650px' }" header="Agregar producto" [modal]="true"
-    styleClass="p-fluid" (onHide)="onHideDialog()">
+    styleClass="p-fluid" (onHide)="hideDialog()">
     <ng-template pTemplate="content">
         <div class="formgrid grid">
             <div class="field col-12">
@@ -40,7 +40,7 @@
         </div>
     </ng-template>
     <ng-template pTemplate="footer">
-        <p-button pRipple label="Cancelar" icon="pi pi-times" [text]="true" (click)="onHideDialog()" />
-        <p-button pRipple label="Guardar" icon="pi pi-check" [text]="true" (click)="saveProductDialog()" />
+        <p-button pRipple label="Cancelar" icon="pi pi-times" [text]="true" (click)="hideDialog()" />
+        <p-button pRipple label="Guardar" icon="pi pi-check" [text]="true" (click)="confirmDialog()" />
     </ng-template>
 </p-dialog>

@@ -18,37 +18,15 @@ export class ProductFormAddComponent {
 
   @Input() isOpenDialod: boolean = false;
   @Output() onCloseDialog = new EventEmitter();
+  @Output() onNewProduct = new EventEmitter<Product>()
   selectedProduct: Product = {} as Product
-  constructor(private productService: ProductService, private messageService: MessageService, private confirmationService: ConfirmationService) {
 
-  }
-
-  onHideDialog() {
+  hideDialog() {
     this.onCloseDialog.emit();
   }
 
-  saveProductDialog() {
-    this.productService.save(this.selectedProduct).subscribe({
-      next: (dt) => {
-        console.log("mensaje= ", dt);
-        if (dt.code == 200 && dt.success == true) {
-          this.messageService.add({ severity: 'success', summary: 'Exitoso', detail: 'Producto Ingresado', life: 3000 });
-        }
-        this.onHideDialog()
-      },
-      error: (e: ApiResponse) => {
-        console.log("error", e);
-        let errorMessage = 'Product no ingresado';
-        if (e.data) {
-          Object.keys(e.data).forEach(key => {
-            errorMessage += ` - ${key}: ${e.data[key]}`;
-          });
-        }
-        this.messageService.add({ severity: 'warn', summary: 'Error', detail: errorMessage, life: 9000 });
-      }
-    })
-
+  confirmDialog() {
+    this.onNewProduct.emit(this.selectedProduct)
   }
-
 
 }

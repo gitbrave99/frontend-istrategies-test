@@ -9,6 +9,7 @@
 <app-product-form-add 
 [isOpenDialod]="isNewProductoDialogShow" 
 (onCloseDialog)="hideNewProductDialog()"
+(onNewProduct)="saveProductDialog($event)"
 />
 
 <app-product-form-update 

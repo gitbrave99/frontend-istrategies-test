@@ -85,7 +85,6 @@ export class ProductTableComponent {
 
   }
 
-
   @Output() onFilterByTipoChange = new EventEmitter<{ originalEvent: Event; value: number }>();
   filterListByType(event: { originalEvent: Event; value: number }) {
     this.onFilterByTipoChange.emit(event);

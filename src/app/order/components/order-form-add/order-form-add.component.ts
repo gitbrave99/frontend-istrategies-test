@@ -4,6 +4,7 @@ import { GenericSimpleList } from '../../../shared/interfaces/generic-simple-lis
 import { ApiResponse } from '../../../shared/interfaces/api-response';
 import { OrderService } from '../../services/order.service';
 import { ConfirmationService, MessageService } from 'primeng/api';
+import dayjs from 'dayjs';
 
 @Component({
   selector: 'app-order-form-add',
@@ -17,7 +18,7 @@ export class OrderFormAddComponent {
   @Output() onConfirmDialog= new EventEmitter<OrderNew>()
 
   orderNew: OrderNew = {} as OrderNew
-  fechaEntrega:Date=new Date()
+  fechaEntrega:Date|null=null
   tipoProductoSolicitado: GenericSimpleList[] = [{ id: 1, value: "Camisas" }, { id: 2, value: "Gorras" }, { id: 3, value: "Uniformes deportivos" }]
   
   constructor(private orderService: OrderService, private messageService: MessageService, private confirmationService: ConfirmationService) { }
@@ -27,10 +28,13 @@ export class OrderFormAddComponent {
   }
   
   confirmDialog(){
-    if (this.fechaEntrega instanceof Date && !isNaN(this.fechaEntrega.getTime())) {
-      this.orderNew.fechaEntrega = this.fechaEntrega.toISOString().split("T")[0]
-    }
+    // if (this.fechaEntrega instanceof Date && !isNaN(this.fechaEntrega.getTime())) {
+    //   this.orderNew.fechaEntrega = this.fechaEntrega.toISOString().split("T")[0]
+    // }
+    this.orderNew.fechaEntrega=dayjs(this.fechaEntrega).format('YYYY-MM-DD');
     this.onConfirmDialog.emit(this.orderNew)
+    this.orderNew= {} as OrderNew
+    this.fechaEntrega=null
   }
   
 }

@@ -9,12 +9,22 @@ import { BaseTemplatePageComponent } from './shared/template/base-template-page/
 const routes: Routes = [
   {
     path:"",
-    component: LoginPageComponent
+    component: OrderPageComponent
   },
-  {
-    path:"matinsa",
-    component: BaseTemplatePageComponent
-  },
+  // {
+  //   path:"matinsa",
+  //   component:BaseTemplatePageComponent,
+  //   children:[
+  //     {
+  //       path:'bodega',
+  //       loadChildren:()=>import('./order/order.module').then(o=>o.OrderModule)
+  //     },
+  //     {
+  //       path:'produccion',
+  //       loadChildren:()=>import('./product/product.module').then(o=>o.ProductModule)
+  //     },
+  //   ]
+  // },
   {
     path:"**",
     component:NotFoundPageComponent

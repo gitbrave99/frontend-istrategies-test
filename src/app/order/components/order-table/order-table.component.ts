@@ -22,9 +22,9 @@ export class OrderTableComponent {
   @Input() loading: boolean = true;
   @Input() orders!: Order[];
 
-  @Output() onReloadTable=new EventEmitter();
+  @Output() onReloadTable = new EventEmitter();
 
-  reloadTable(){
+  reloadTable() {
     this.onReloadTable.emit()
   }
 
@@ -58,6 +58,7 @@ export class OrderTableComponent {
     console.log("abriendo");
     this.onOpenNewOrderDialog.emit()
   }
+
   @Output() onOpenUpdateOrderDialog = new EventEmitter<Order>();
   onOpenFormUpdate(order: Order) {
     this.onOpenUpdateOrderDialog.emit(order);
@@ -65,7 +66,19 @@ export class OrderTableComponent {
 
   @Output() onFilterByDate = new EventEmitter<Date>()
   filterByDate(date: Date) {
+    if (this.selectedStatus == -1) {
+      return
+    }
     this.onFilterByDate.emit(date)
+  }
+
+  @Output() onClearFilters = new EventEmitter()
+  clearFilters() {
+    this.selectedStatus = -1;
+    this.filterDate = null;
+    this.onClearFilters.emit()
+    this.reloadTable();
+
   }
 
   constructor(private orderService: OrderService, private messageService: MessageService, private confirmationService: ConfirmationService) { }
@@ -83,30 +96,43 @@ export class OrderTableComponent {
     }
   }
 
-
   getReportAll() {
+    this.exportReportHistoricLoading = true
     this.orderService.getReportAll().subscribe({
       next: (data: Blob) => {
-        const blob = new Blob([data], { type: 'application/pdf' });
-        const url = window.URL.createObjectURL(blob);
-        const windowTitle = 'Reporte historico';
-        window.open(url, windowTitle); // A
+        const url = window.URL.createObjectURL(data);
+        // Crear un enlace de descarga y hacer clic en él
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', 'report.pdf');
+        document.body.appendChild(link);
+        link.click();
+        window.URL.revokeObjectURL(url);
+        link.remove();  
       },
       error: () => {
         console.log("ERROR REPORT ALL");
+      },
+      complete: () => {
+        this.exportReportHistoricLoading = false
       }
     })
   }
 
-  
+
   getReportByDate() {
+    this.exportReportLoading = true
     const datef = dayjs(this.filterDate).format('YYYY-MM-DD');
     this.orderService.getReportByDate(datef).subscribe({
       next: (data: Blob) => {
-        const blob = new Blob([data], { type: 'application/pdf' });
-        const url = window.URL.createObjectURL(blob);
-        const windowTitle = 'Reporte historico';
-        window.open(url, windowTitle); // A
+        const url = window.URL.createObjectURL(data);
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', 'report.pdf');
+        document.body.appendChild(link);
+        link.click();
+        window.URL.revokeObjectURL(url);
+        link.remove();  
       },
       error: () => {
         console.log("ERROR REPORT ALL");
@@ -115,56 +141,44 @@ export class OrderTableComponent {
   }
 
   getReportFilter() {
+    this.exportReportLoading = true
     const datef = dayjs(this.filterDate).format('YYYY-MM-DD');
     console.log("filter: ", this.selectedStatus, datef);
-
     this.orderService.getReport(this.selectedStatus, datef).subscribe({
       next: (data: Blob) => {
-        // const url = window.URL.createObjectURL(data);
-        // const link = document.createElement('a');
-        // link.href = url;
-        // link.setAttribute('download', 'report.pdf');
-        // document.body.appendChild(link);
-        // link.click();
-        // window.URL.revokeObjectURL(url);
-        // link.remove();  
-        const blob = new Blob([data], { type: 'application/pdf' });
-        const url = window.URL.createObjectURL(blob);
-        const windowTitle = 'Título personalizado de tu PDF';
-        window.open(url, windowTitle);
+        const url = window.URL.createObjectURL(data);
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', 'report.pdf');
+        document.body.appendChild(link);
+        link.click();
+        window.URL.revokeObjectURL(url);
+        link.remove();
       },
       error: (error) => {
         console.error('Error al descargar el reporte:', error);
       },
       complete: () => {
         console.log("funcin cocmplete");
-
         this.exportReportLoading = false
       }
     })
   }
 
-  clearFilters() {
-    this.selectedStatus = -1;
-    this.filterDate = null;
-    this.reloadTable()
-  }
+
 
   onGenerateReportHistoric() {
     this.getReportAll()
-    this.exportReportHistoricLoading = false
   }
 
   onGenerateReport() {
-    if (this.filterDate==null) return;
+    if (this.filterDate == null) return;
     this.exportReportLoading = true
     if (this.selectedStatus === 0) {
       this.getReportByDate()
     } else {
       this.getReportFilter()
-
     }
-    this.exportReportLoading = false
   }
 
   getSeverity(status: string) {

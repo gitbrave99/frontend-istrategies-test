@@ -40,7 +40,6 @@ export class ProductPageComponent implements OnInit {
     this.productService.getProduct()
       .subscribe({
         next: (rProducts) => {
-          console.log("rProducts= ", rProducts);
           this.productsList = rProducts
         },
         complete: () => {
@@ -55,7 +54,7 @@ export class ProductPageComponent implements OnInit {
         if (dt.code == 200 && dt.success == true) {
           console.log("EJEMCUANDOT  ", dt);
           this.messageService.add({ severity: 'success', summary: 'Exitoso', detail: 'Producto actualizado', life: 3000 });
-          this.getProducts()
+          // this.getProducts()
         }
       },
       error: (e: ApiResponse) => {
@@ -67,6 +66,9 @@ export class ProductPageComponent implements OnInit {
           });
         }
         this.messageService.add({ severity: 'warn', summary: 'Error', detail: errorMessage, life: 9000 });
+      },
+      complete: () => {
+        this.getProducts();
       }
     })
     this.isUpdateProductDialogShow = false
@@ -86,8 +88,11 @@ export class ProductPageComponent implements OnInit {
   deleteProduct(idproduct: number) {
     this.productService.delete(idproduct).subscribe({
       next: (resp) => {
-        console.log("resp : ", resp);
-        this.messageService.add({ severity: 'success', summary: 'Éxito', detail: resp.message, life: 9000 });
+        if (resp.code===200) {
+          this.messageService.add({ severity: 'success', summary: 'Éxito', detail: resp.message, life: 9000 });
+          return
+        }
+        this.messageService.add({ severity: 'warn', summary: 'Error', detail: resp.message, life: 9000 }); 
       },
       error: (e: ApiResponse) => {
         console.log("error", e);
@@ -96,7 +101,32 @@ export class ProductPageComponent implements OnInit {
       complete: () => {
         this.getProducts()
       }
+    })
+  }
 
+
+  saveProductDialog(newProduct: Product) {
+    this.productService.save(newProduct).subscribe({
+      next: (dt) => {
+        console.log("mensaje= ", dt);
+        if (dt.code == 200 && dt.success == true) {
+          this.messageService.add({ severity: 'success', summary: 'Exitoso', detail: 'Producto Ingresado', life: 3000 });
+        }
+        this.hideNewProductDialog();
+      },
+      error: (e: ApiResponse) => {
+        console.log("error", e);
+        let errorMessage = 'Product no ingresado';
+        if (e.data) {
+          Object.keys(e.data).forEach(key => {
+            errorMessage += ` - ${key}: ${e.data[key]}`;
+          });
+        }
+        this.messageService.add({ severity: 'warn', summary: 'Error', detail: errorMessage, life: 9000 });
+      },
+      complete: () => {
+        this.getProducts()
+      }
     })
   }
 
@@ -107,12 +137,10 @@ export class ProductPageComponent implements OnInit {
     }
     this.productService.getProductByType(event.value).subscribe({
       next: (list) => {
-        console.log("list filtered: ", list);
         this.productsList = list
       }
     })
   }
-
 
   showUpdateProductDialog(product: Product) {
     this.selectedProductUpdate.idProducto = product.idProducto;

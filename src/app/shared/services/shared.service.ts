@@ -3,8 +3,6 @@ import { DataResponse } from '../../auth/interfaces/login-response.interface';
 import { SimpleMenu } from '../interfaces/simple-menu.interface';
 import { MenuItem } from 'primeng/api';
 
-
-
 @Injectable({
   providedIn: 'root'
 })
@@ -19,7 +17,6 @@ export class SharedService {
       this.userData = JSON.parse(localStorage.getItem("userdata")!)
       console.log("data from servd ", this.userData);      
     }
-
     if (this.userData.tipousuario == 1) {
       return this.menuBodega
     }
