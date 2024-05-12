@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Order, OrderInProgress, OrderNew } from '../../interfaces/order.interface';
+import { Order, OrderInProgress, OrderNew, OrderPendingDetail } from '../../interfaces/order.interface';
 import { OrderService } from '../../services/order.service';
 import { ApiResponse } from '../../../shared/interfaces/api-response';
 import { ConfirmationService, MessageService } from 'primeng/api';
@@ -39,7 +39,7 @@ export class OrderPageComponent implements OnInit {
 
   onFilterByDeliveryDate(date: Date) {
     const datef = dayjs(date).format('YYYY-MM-DD');
-    this.dateFilter= date
+    this.dateFilter = date
     console.log("IN DATE DROPDOWN opcion: ", this.selectedStatusFilter, "dat: ", datef);
     if (this.selectedStatusFilter == 0) {
       this.getOrdersByDate(datef)
@@ -86,7 +86,7 @@ export class OrderPageComponent implements OnInit {
     this.loadingTable = false;
   }
 
-  save(newOrder: OrderNew) {
+  save(newOrder: OrderPendingDetail) {
     this.orderService.save(newOrder).subscribe({
       next: (dt: ApiResponse) => {
         if (dt.code == 200 && dt.success == true) {
@@ -95,7 +95,7 @@ export class OrderPageComponent implements OnInit {
       },
       error: (e: ApiResponse) => {
         console.log("error", e);
-        let errorMessage = 'Orden no ingresad';
+        let errorMessage = 'Orden no ingresada';
         if (e.data) {
           Object.keys(e.data).forEach(key => {
             errorMessage += ` -  ${e.data[key]}`;
@@ -109,8 +109,6 @@ export class OrderPageComponent implements OnInit {
     })
     this.hideNewOrderDialog()
   }
-
-
 
   showUpdateOrderDialog(order: Order) {
     this.selectedOrderUpdate = order

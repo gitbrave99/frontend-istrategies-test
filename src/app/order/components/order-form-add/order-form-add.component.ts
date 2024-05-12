@@ -1,8 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { Order, OrderNew } from '../../interfaces/order.interface';
+import { MateriaPrima, Order, OrderNew, OrderPendingDetail } from '../../interfaces/order.interface';
 import { GenericSimpleList } from '../../../shared/interfaces/generic-simple-list.interfaces';
 import { ApiResponse } from '../../../shared/interfaces/api-response';
-import { OrderService } from '../../services/order.service';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import dayjs from 'dayjs';
 import { ProductService } from '../../../product/services/product.service';
@@ -17,27 +16,26 @@ export class OrderFormAddComponent implements OnInit {
 
   @Input() isNewOrderDialogShow: boolean = false;
   @Output() onHideNewOrderDialog = new EventEmitter()
-  @Output() onConfirmDialog = new EventEmitter<OrderNew>()
+  @Output() onConfirmDialog = new EventEmitter<OrderPendingDetail>()
 
-  orderNew: OrderNew = {} as OrderNew
+  orderNew: OrderPendingDetail = {} as OrderPendingDetail
   fechaEntrega: Date | null = null
   tipoProductoSolicitado: GenericSimpleList[] = [{ id: 1, value: "Camisas" }, { id: 2, value: "Gorras" }, { id: 3, value: "Uniformes deportivos" }]
 
   materiaPrima: Product[] = []
-  matPrimaListSelected: Product[] = []
+  matPrimaListSelected: MateriaPrima[] = []
   matPrimaAddSelected: Product = {} as Product
   cantToUse: number = 0;
   matNameSelected: string = ""
 
   matPrimaModSelected: Product = {} as Product
-  matPrimaNew: Product = {} as Product
+  matPrimaNew: MateriaPrima = {} as MateriaPrima
   matNameModSelected: string = ""
   cantToUseMod: number = 0;
 
   get materiaPrimaList() {
     return [...this.materiaPrima]
   }
-
 
   constructor(private productService: ProductService, private messageService: MessageService) { }
 
@@ -55,7 +53,6 @@ export class OrderFormAddComponent implements OnInit {
       }
     })
   }
- 
 
   closeDialog() {
     this.onHideNewOrderDialog.emit()
@@ -63,8 +60,11 @@ export class OrderFormAddComponent implements OnInit {
 
   confirmDialog() {
     this.orderNew.fechaEntrega = dayjs(this.fechaEntrega).format('YYYY-MM-DD');
+    this.orderNew.materiaPrima= this.matPrimaListSelected
+    console.log("order data sent? ", this.orderNew);
+    
     this.onConfirmDialog.emit(this.orderNew)
-    this.orderNew = {} as OrderNew
+    this.orderNew = {} as OrderPendingDetail
     this.fechaEntrega = null
   }
 
@@ -75,20 +75,19 @@ export class OrderFormAddComponent implements OnInit {
 
   addMatPrima() {
     this.matPrimaNew.idProducto = this.matPrimaAddSelected.idProducto
-    this.matPrimaNew.nombre = this.matPrimaAddSelected.nombre
+    this.matPrimaNew.materiaPrima = this.matPrimaAddSelected.nombre
     this.matPrimaNew.unidad = this.matPrimaAddSelected.unidad
-    this.matPrimaNew.existencia = this.cantToUse
+    this.matPrimaNew.cantidadUtilizar = this.cantToUse
 
-    this.productService.getProductByIdCantToUse(this.matPrimaAddSelected.idProducto,this.cantToUse).subscribe({
+    this.productService.getProductByIdCantToUse(this.matPrimaAddSelected.idProducto, this.cantToUse).subscribe({
       next: (resp) => {
-        console.log("stock ok_+ ", resp.message);
-        this.matPrimaListSelected.push(this.matPrimaNew); 
+        this.matPrimaListSelected.push(this.matPrimaNew);
         this.matPrimaAddSelected = {} as Product
-        this.matPrimaNew= {} as Product
+        this.matPrimaNew = {} as MateriaPrima
         this.cantToUse = 0
         this.matNameSelected = ""
       },
-      error: (error:ApiResponse) => {
+      error: (error: ApiResponse) => {
         console.log("msnaej erro< ", error);
         this.messageService.add({ severity: 'warn', summary: 'Error', detail: error.message, life: 9000 });
       }
@@ -97,15 +96,22 @@ export class OrderFormAddComponent implements OnInit {
   }
 
   modMatPrima() {
-    // implementar logica par modificar 
-    this.matPrimaListSelected.forEach((prod: Product) => {
-      if (prod.idProducto == this.matPrimaModSelected.idProducto) {
-        prod.existencia = this.cantToUseMod
+    this.productService.getProductByIdCantToUse(this.matPrimaModSelected.idProducto, this.cantToUseMod).subscribe({
+      next: (resp) => {
+        this.matPrimaListSelected.forEach((prod: MateriaPrima) => {
+          if (prod.idProducto == this.matPrimaModSelected.idProducto) {
+            prod.cantidadUtilizar = this.cantToUseMod
+          }
+        })
+        this.matPrimaModSelected = {} as Product
+        this.cantToUseMod = 0
+        this.matNameModSelected = ""
+      },
+      error: (error: ApiResponse) => {
+        console.log("msnaej erro< ", error);
+        this.messageService.add({ severity: 'warn', summary: 'Error', detail: error.message, life: 9000 });
       }
     })
-    this.matPrimaModSelected = {} as Product
-    this.cantToUseMod = 0
-    this.matNameModSelected = ""
   }
 
   selectModMateriaPrima(prod: Product) {
@@ -113,8 +119,9 @@ export class OrderFormAddComponent implements OnInit {
     this.matPrimaModSelected = prod
     this.cantToUseMod = prod.existencia
   }
-  deleteMateriaPrima(prod:Product){
-    this.matPrimaListSelected=this.matPrimaListSelected.filter((prod:Product)=>prod.idProducto!=prod.idProducto)
+
+  deleteMateriaPrima(pProd: Product) {
+    this.matPrimaListSelected = this.matPrimaListSelected.filter((prod: MateriaPrima) => prod.idProducto != pProd.idProducto)
   }
 
 }

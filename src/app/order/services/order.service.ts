@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment.development';
-import { Order, OrderInProgress, OrderNew } from '../interfaces/order.interface';
+import { Order, OrderInProgress, OrderNew, OrderPendingDetail } from '../interfaces/order.interface';
 import { Observable, catchError, throwError } from 'rxjs';
 import { ApiResponse } from '../../shared/interfaces/api-response';
 
@@ -46,7 +46,7 @@ export class OrderService {
   }
 
 
-  save(order: OrderNew): Observable<ApiResponse> {
+  save(order: OrderPendingDetail): Observable<ApiResponse> {
     return this.http.post<ApiResponse>(`${environment.urlBase}/orden-produccion`, order).pipe(
       catchError((error: any) => {
         const apiResponse: ApiResponse = error.error;

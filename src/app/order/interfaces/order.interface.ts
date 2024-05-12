@@ -11,13 +11,6 @@ export interface Order {
     materiaPrima:           MateriaPrima[];
 }
 
-export interface MateriaPrima {
-    idProducto:       number;
-    materiaPrima:     string;
-    descripcion:      string;
-    cantidadUtilizar: number;
-    unidad:           string;
-}
 
 export interface OrderNew {
     cliente:                  string;
@@ -31,3 +24,19 @@ export interface OrderInProgress {
     idTipoLinea:       number;
 }
 
+// ordene en pendiente
+export interface OrderPendingDetail {
+    cliente:                  string;
+    idTipoProductoSolicitado: number;
+    cantidadSolicitada:       number;
+    fechaEntrega:             string;
+    materiaPrima:             MateriaPrima[];
+}
+
+export interface MateriaPrima {
+    idProducto:       number;
+    materiaPrima:     string;
+    descripcion:      string;
+    cantidadUtilizar: number;
+    unidad:           string;
+}
