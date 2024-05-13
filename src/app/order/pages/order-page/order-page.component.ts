@@ -119,18 +119,21 @@ export class OrderPageComponent implements OnInit {
     this.orderService.updateInComplete(idOrdenProduccion, dateComplete).subscribe({
       next: (dt) => {
         if (dt.code == 200 && dt.success == true) {
-          this.messageService.add({ severity: 'success', summary: 'Exitoso', detail: 'Orden actualizada', life: 3000 });
+          this.messageService.add({ severity: 'success', summary: 'Exitoso', detail: dt.message, life: 3000 });
         }
       },
       error: (e: ApiResponse) => {
         console.log("error", e);
+
         let errorMessage = 'Orden no actualizada';
         if (e.data) {
           Object.keys(e.data).forEach(key => {
             errorMessage += ` - ${key}: ${e.data[key]}`;
           });
         }
+        
         this.messageService.add({ severity: 'warn', summary: 'Error', detail: errorMessage, life: 9000 });
+
       },
       complete: () => {
         this.getOrders();

@@ -20,35 +20,35 @@ export class AuthService {
     private router: Router
   ) { }
 
-  login(user:UsuarioLogin){
-    const url= `${this.baseUrl}/login`;
-    return this.http.post<LoginResponse>(url,user)
-    .pipe(
-      tap(resp=>{
-        console.log("respuesta: ", resp);
-        if (resp.success) {
-          localStorage.setItem("userdata", JSON.stringify(resp.data));
-          localStorage.setItem("token", resp.data.token);
-          this.redirectToUserModule(resp.data.tipousuario)
-        }
-      }),
-      // map(resp=> resp?.ok),
-      catchError(err=>of(err.error.msg))
-    )
+  login(user: UsuarioLogin) {
+    const url = `${this.baseUrl}/login`;
+    return this.http.post<LoginResponse>(url, user)
+      .pipe(
+        tap(resp => {
+          console.log("respuesta: ", resp);
+          if (resp.success) {
+            localStorage.setItem("userdata", JSON.stringify(resp.data));
+            localStorage.setItem("token", resp.data.token);
+            this.redirectToUserModule(resp.data.tipousuario)
+          }
+        }),
+        // map(resp=> resp?.ok),
+        catchError(err => of(err.error.msg))
+      )
   }
 
-  logout(){
-    const url= `${this.baseUrl}/logout`;
+  logout() {
+    const url = `${this.baseUrl}/logout`;
     return this.http.delete<ApiResponse>(url)
-    .pipe(
-      tap(resp=>{
-        console.log("respuesta: ", resp);
-        localStorage.removeItem("userdata")
-        localStorage.removeItem("token")
-      }),
-      // map(resp=> resp?.ok),
-      catchError(err=>of(err.error.msg))
-    )
+      .pipe(
+        tap(resp => {
+          console.log("respuesta: ", resp);
+          localStorage.removeItem("userdata")
+          localStorage.removeItem("token")
+        }),
+        // map(resp=> resp?.ok),
+        catchError(err => of(err.error.msg))
+      )
   }
 
 
