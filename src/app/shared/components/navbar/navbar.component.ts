@@ -3,43 +3,42 @@ import { MenuItem } from 'primeng/api';
 import { SimpleMenu } from '../../interfaces/simple-menu.interface';
 import { SharedService } from '../../services/shared.service';
 import { AuthService } from '../../../auth/services/auth.service';
-import { LoginPageComponent } from '../../../auth/pages/login-page/login-page.component';
+import { Router } from '@angular/router';
 
 @Component({
-  selector: 'shared-navbar',
-  templateUrl: './navbar.component.html',
-  styleUrl: './navbar.component.css'
+    selector: 'shared-navbar',
+    templateUrl: './navbar.component.html',
+    styleUrl: './navbar.component.css'
 })
-export class NavbarComponent  implements OnInit {
+export class NavbarComponent implements OnInit {
 
-  itemsNavbar: MenuItem[] | undefined;
-  itemsUserConfig: MenuItem[] | undefined;
+    itemsNavbar: MenuItem[] | undefined;
+    itemsUserConfig: MenuItem[] | undefined;
 
-  
-  public menuSidebar:SimpleMenu[]=[]
+    public menuSidebar: SimpleMenu[] = []
 
-  constructor(private authService:AuthService){  }
+    constructor(
+        private authService: AuthService,
+        private sharedService: SharedService,
+        private router: Router) { }
 
-  logout(){
-    this.authService.logout().subscribe({
-        next:(response)=>{
-            console.log("logout response: ", response);
-        },
-        error:(err)=>{
-            console.log("ERROR RESPONSE: ", err);
-        }
-    });
-  }
-  
-  ngOnInit() {
-        this.itemsNavbar = [
-            {
-                label: 'Productos',
-                icon: 'pi pi-home',
-                url:"bodega"
+    logout() {
+        this.authService.logout().subscribe({
+            next: (response) => {
+                console.log("logout response: ", response);
             },
-        ]
-        this.itemsUserConfig=[
+            error: (err) => {
+                console.log("ERROR RESPONSE: ", err);
+            },
+            complete: () => {
+                this.router.navigate(['/']);
+            }
+        });
+    }
+
+    ngOnInit() {
+        this.itemsNavbar = this.sharedService.getMenuUserLogged();
+        this.itemsUserConfig = [
             {
                 label: 'Configuración',
                 icon: 'pi pi-cog'
@@ -47,12 +46,11 @@ export class NavbarComponent  implements OnInit {
             {
                 label: 'Salir',
                 icon: 'pi pi-sign-out',
-                command:()=>{
+                command: () => {
                     console.log("logoutin");
-                    
-                }   
+                    this.logout()
+                }
             }
         ]
     }
-
 }

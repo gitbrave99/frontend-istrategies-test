@@ -8,14 +8,14 @@ import { MenuItem } from 'primeng/api';
 })
 export class SharedService {
 
-  userData:DataResponse={} as DataResponse;
+  userData: DataResponse = {} as DataResponse;
   constructor() { }
 
-  public getMenuUserLogged(): MenuItem[] | undefined{
+  public getMenuUserLogged(): MenuItem[] | undefined {
     if (localStorage.getItem("userdata")) {
       console.log(localStorage.getItem("userdata"));
       this.userData = JSON.parse(localStorage.getItem("userdata")!)
-      console.log("data from servd ", this.userData);      
+      console.log("data from servd ", this.userData);
     }
     if (this.userData.tipousuario == 1) {
       return this.menuBodega
@@ -26,19 +26,19 @@ export class SharedService {
     return []
   }
 
-  private menuProduccion:MenuItem[] | undefined = [
+  private menuProduccion: MenuItem[] | undefined = [
     {
-      label:'produccion',
-      url:'produccion/home'
+      label: 'produccion',
+      url: 'matinsa/produccion'
     }
-  ]  
+  ]
 
   private menuBodega: MenuItem[] | undefined = [
     {
-      label:'Bodega',
-      url:'bodega/home'
+      label: 'Bodega',
+      url: 'matinsa/bodega'
     }
-  ]  
-  
+  ]
+
 }
 

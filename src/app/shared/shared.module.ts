@@ -4,6 +4,8 @@ import { NavbarComponent } from './components/navbar/navbar.component';
 import { NotFoundPageComponent } from './pages/not-found-page/not-found-page.component';
 import { PrimenglModule } from '../primengl/primengl.module';
 import { BaseTemplatePageComponent } from './template/base-template-page/base-template-page.component';
+import { RouterModule } from '@angular/router';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -13,7 +15,9 @@ import { BaseTemplatePageComponent } from './template/base-template-page/base-te
   ],
   imports: [
     CommonModule,
-    PrimenglModule
+    PrimenglModule,
+    RouterModule,
+    HttpClientModule
   ],
   exports:[
     NotFoundPageComponent,

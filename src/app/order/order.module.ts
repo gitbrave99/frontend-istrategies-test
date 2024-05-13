@@ -5,6 +5,7 @@ import { OrderPageComponent } from './pages/order-page/order-page.component';
 import { PrimenglModule } from '../primengl/primengl.module';
 import { OrderFormUpdateComponent } from './components/order-form-update/order-form-update.component';
 import { OrderFormAddComponent } from './components/order-form-add/order-form-add.component';
+import { OrderRoutingModule } from './order-routing.module';
 
 
 
@@ -17,7 +18,8 @@ import { OrderFormAddComponent } from './components/order-form-add/order-form-ad
   ],
   imports: [
     CommonModule,
-    PrimenglModule
+    PrimenglModule,
+    OrderRoutingModule
   ],
   exports:[
     OrderPageComponent

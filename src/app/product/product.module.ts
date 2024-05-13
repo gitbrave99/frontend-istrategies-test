@@ -9,6 +9,9 @@ import { FormsModule } from '@angular/forms';
 import { ProductFormAddComponent } from './components/product-form-add/product-form-add.component';
 import { ProductFormUpdateComponent } from './components/product-form-update/product-form-update.component';
 
+import { RouterModule } from '@angular/router';
+import { ProductRoutingModule } from './product-routing.module';
+
 @NgModule({
   declarations: [
     ProductTableComponent,
@@ -20,7 +23,9 @@ import { ProductFormUpdateComponent } from './components/product-form-update/pro
     PrimenglModule,
     CommonModule,
     HttpClientModule,
-    FormsModule
+    ProductRoutingModule,
+    FormsModule,
+    RouterModule
   ],
   exports:[
     ProductPageComponent
